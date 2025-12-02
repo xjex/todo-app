@@ -90,13 +90,12 @@
         <div class="text-center">
           <p class="text-sm text-gray-600">
             Already have an account?
-            <button
-              type="button"
-              @click="$emit('switch-to-login')"
+            <router-link
+              to="/login"
               class="font-medium text-blue-600 hover:text-blue-500"
             >
               Sign in
-            </button>
+            </router-link>
           </p>
         </div>
       </form>
@@ -106,11 +105,11 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { useToastStore } from '../stores/toast';
 
-const emit = defineEmits(['switch-to-login', 'registered']);
-
+const router = useRouter();
 const authStore = useAuthStore();
 const toastStore = useToastStore();
 const errors = ref({});
@@ -128,7 +127,7 @@ const handleSubmit = async () => {
   
   if (result.success) {
     toastStore.success('Account created successfully! Welcome!');
-    emit('registered');
+    router.push('/');
   } else {
     errors.value = result.errors || {};
     if (result.errors && Object.keys(result.errors).length > 0) {

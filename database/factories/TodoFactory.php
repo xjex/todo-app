@@ -19,11 +19,13 @@ class TodoFactory extends Factory
      */
     public function definition(): array
     {
+        $dueDate = fake()->optional()->dateTimeBetween('now', '+30 days');
+        
         return [
             'title' => fake()->sentence(),
             'description' => fake()->paragraph(),
             'category' => fake()->randomElement(['Work', 'Personal', 'Shopping', 'Health', null]),
-            'due_date' => fake()->optional()->dateTimeBetween('now', '+30 days')->format('Y-m-d'),
+            'due_date' => $dueDate ? $dueDate->format('Y-m-d') : null,
             'completed' => fake()->boolean(20),
         ];
     }

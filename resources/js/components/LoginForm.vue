@@ -61,13 +61,12 @@
         <div class="text-center">
           <p class="text-sm text-gray-600">
             Don't have an account?
-            <button
-              type="button"
-              @click="$emit('switch-to-register')"
+            <router-link
+              to="/register"
               class="font-medium text-blue-600 hover:text-blue-500"
             >
               Sign up
-            </button>
+            </router-link>
           </p>
         </div>
       </form>
@@ -77,11 +76,11 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { useToastStore } from '../stores/toast';
 
-const emit = defineEmits(['switch-to-register', 'logged-in']);
-
+const router = useRouter();
 const authStore = useAuthStore();
 const toastStore = useToastStore();
 const errors = ref({});
@@ -97,7 +96,7 @@ const handleSubmit = async () => {
   
   if (result.success) {
     toastStore.success('Login successful! Welcome back.');
-    emit('logged-in');
+    router.push('/');
   } else {
     errors.value = result.errors || {};
     if (result.errors && Object.keys(result.errors).length > 0) {

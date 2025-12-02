@@ -139,44 +139,6 @@ POST /api/todos
 }
 ```
 
-## Project Structure
-
-```
-todo-2025/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   └── API/
-│   │   │       └── TodoController.php
-│   │   └── Middleware/
-│   ├── Models/
-│   │   └── Todo.php
-│   └── Providers/
-├── database/
-│   └── migrations/
-│       └── 2024_01_01_000001_create_todos_table.php
-├── public/
-├── resources/
-│   ├── css/
-│   │   └── app.css
-│   ├── js/
-│   │   ├── components/
-│   │   │   ├── TodoForm.vue
-│   │   │   ├── TodoList.vue
-│   │   │   ├── TodoItem.vue
-│   │   │   └── TodoFilters.vue
-│   │   ├── stores/
-│   │   │   └── todo.js
-│   │   ├── App.vue
-│   │   ├── app.js
-│   │   └── bootstrap.js
-│   └── views/
-│       └── app.blade.php
-├── routes/
-│   ├── api.php
-│   └── web.php
-└── vite.config.js
-```
 
 ## Development
 
