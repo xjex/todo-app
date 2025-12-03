@@ -92,6 +92,36 @@ jobs:
               --timeout 300
           fi
 
+      - name: Run Database Migrations
+        run: |
+          # Run migrations using Cloud Run jobs
+          gcloud run jobs create ${{ env.SERVICE_NAME }}-migrate \
+            --image ${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/${{ env.ARTIFACT_REGISTRY_REPO }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            --region ${{ env.REGION }} \
+            --command "php" \
+            --args "artisan,migrate,--force" \
+            --max-retries 1 \
+            --task-timeout 300 || true
+          
+          # Update the job if it already exists
+          gcloud run jobs update ${{ env.SERVICE_NAME }}-migrate \
+            --image ${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/${{ env.ARTIFACT_REGISTRY_REPO }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            --region ${{ env.REGION }} || true
+          
+          # Set environment variables from LARAVEL_ENV secret
+          if [ -n "${{ secrets.LARAVEL_ENV }}" ]; then
+            ENV_VARS=$(echo '${{ secrets.LARAVEL_ENV }}' | jq -r 'to_entries | map("\(.key)=\(.value)") | join(",")')
+            gcloud run jobs update ${{ env.SERVICE_NAME }}-migrate \
+              --region ${{ env.REGION }} \
+              --set-env-vars "$ENV_VARS" || true
+          fi
+          
+          # Execute the migration job
+          echo "Running database migrations..."
+          gcloud run jobs execute ${{ env.SERVICE_NAME }}-migrate \
+            --region ${{ env.REGION }} \
+            --wait
+
       - name: Get Cloud Run URL
         run: |
           SERVICE_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
