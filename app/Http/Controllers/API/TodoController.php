@@ -4,7 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Services\TodoService;
-use Illuminate\Http\Request;
+use App\Http\Requests\CreateTodoRequest;
+use App\Http\Requests\UpdateTodoRequest;
 use Illuminate\Http\JsonResponse;
 
 class TodoController extends Controller
@@ -16,7 +17,7 @@ class TodoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): JsonResponse
+    public function index(IndexTodoRequest $request): JsonResponse
     {
         $filters = [
             'search' => $request->get('search'),
@@ -37,7 +38,7 @@ class TodoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(CreateTodoRequest $request): JsonResponse
     {
         $todo = $this->todoService->createTodo($request->all(), $request->user()->id);
 
@@ -51,7 +52,7 @@ class TodoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, int $todo): JsonResponse
+    public function show(ShowTodoRequest $request, int $todo): JsonResponse
     {
         $todo = $this->todoService->getTodoById($todo, $request->user()->id);
 
@@ -64,7 +65,7 @@ class TodoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $todo): JsonResponse
+    public function update(UpdateTodoRequest $request, int $todo): JsonResponse
     {
         $todo = $this->todoService->updateTodo($todo, $request->all(), $request->user()->id);
 
@@ -78,7 +79,7 @@ class TodoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, int $todo): JsonResponse
+    public function destroy(DestroyTodoRequest $request, int $todo): JsonResponse
     {
         $this->todoService->deleteTodo($todo, $request->user()->id);
 
@@ -91,7 +92,7 @@ class TodoController extends Controller
     /**
      * Toggle completion status
      */
-    public function toggle(Request $request, int $todo): JsonResponse
+    public function toggle(ToggleTodoRequest $request, int $todo): JsonResponse
     {
         $todo = $this->todoService->toggleTodo($todo, $request->user()->id);
 
